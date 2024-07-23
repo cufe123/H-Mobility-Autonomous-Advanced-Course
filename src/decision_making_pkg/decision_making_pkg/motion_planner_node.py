@@ -98,21 +98,55 @@ class MotionPlanningNode(Node):
                         self.left_speed_command = 0 
                         self.right_speed_command = 0
         else:
+
+            ###이전예시 2####
+            #if self.lane_data is None:
+            #    self.steering_command = 0
+            #else:    
+            #    target_point = (self.lane_data.target_x, self.lane_data.target_y) # 차선의 중심점
+            #    car_center_point = (320, 179) # roi가 잘린 후 차량 앞 범퍼 중앙 위치
+
+            #    target_slope = DMFL.calculate_slope_between_points(target_point, car_center_point)
+                
+            #    if target_slope > 0:
+            #        self.steering_command =  7 # 예시 속도 값 (7이 최대 조향) 
+            #    elif target_slope < 0:
+            #        self.steering_command =  -7
+            #    else:
+            #        self.steering_command = 0
+
+            ###상휘### 수정중
             if self.lane_data is None:
                 self.steering_command = 0
             else:    
                 target_point = (self.lane_data.target_x, self.lane_data.target_y) # 차선의 중심점
-                car_center_point = (320, 179) # roi가 잘린 후 차량 앞 범퍼 중앙 위치
+                car_center_point = (320, 134) # 화면의 가로 중앙, 세로 3/4지점
 
                 target_slope = DMFL.calculate_slope_between_points(target_point, car_center_point)
-                
+
+                #target_slope는 라인의 중심 x좌표에 따른 함수, y좌표는 상수(90)
+                target_slope_resolution_y = car_center_point[1] - target_point[1]
+                target_slope_resolution_x = car_center_point[0]/7
+
                 if target_slope > 0:
-                    self.steering_command =  7 # 예시 속도 값 (7이 최대 조향) 
+                    if 1 / target_slope > (target_slope_resolution_x * 1) / target_slope_resolution_y;
+                    self.steering_command =  1
+                    if 1 / target_slope > (target_slope_resolution_x * 2) / target_slope_resolution_y;
+                    self.steering_command =  2
+                    if 1 / target_slope > (target_slope_resolution_x * 3) / target_slope_resolution_y;
+                    self.steering_command =  3
+                    if 1 / target_slope > (target_slope_resolution_x * 4) / target_slope_resolution_y;
+                    self.steering_command =  4
+                    if 1 / target_slope > (target_slope_resolution_x * 5) / target_slope_resolution_y;
+                    self.steering_command =  5
+                    if 1 / target_slope > (target_slope_resolution_x * 6) / target_slope_resolution_y;
+                    self.steering_command =  6
+                    if 1 / target_slope > (target_slope_resolution_x * 7) / target_slope_resolution_y;
+                    self.steering_command =  7
                 elif target_slope < 0:
                     self.steering_command =  -7
                 else:
                     self.steering_command = 0
-
 
                 #### 이전 예시 ####
                 # if self.lane_data.slope > 0:
